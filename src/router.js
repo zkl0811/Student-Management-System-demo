@@ -1,26 +1,54 @@
+//router for different components
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
-
+import Login from '@/views/login';
+import Layout from '@/components/Layout.vue';
+import Goods from '@/views/goods';
+import Member from '@/views/member';
+import Home from '@/views/homepage';
+import Staff from '@/views/staff';
+import Supplier from '@/views/supplier';
 Vue.use(Router);
 
 export default new Router({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: "/",
-      name: "home",
-      component: Home
-    },
-    {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
-    }
-  ]
+    routes: [
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
+        },
+        {
+            path: '/',
+            name: 'layout',
+            component: Layout,
+            redirect: '/home',
+            children: [
+                {
+                    path: '/home',
+                    component: Home,
+                    meta: {title: 'Home Page'}
+                },
+                {
+                    path: '/member',
+                    component: Member,
+                    meta: {title: 'Members Management'}
+                },
+                {
+                    path: '/supplier',
+                    component: Supplier,
+                    meta: {title: 'Venders Management'}
+                },
+                {
+                    path: '/goods',
+                    component: Goods,
+                    meta: {title: 'Goods Management'}                    
+                },
+                {
+                    path: '/staff',
+                    component: Staff,
+                    meta: {title: 'Staff Management'}
+                }
+            ]
+        }
+    ]
 });

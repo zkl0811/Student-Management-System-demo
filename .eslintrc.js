@@ -1,3 +1,4 @@
+//config for lint check
 module.exports = {
   root: true,
   env: {
