@@ -29,7 +29,7 @@
     <el-table
       :data="list"
       :highlight-current-row="isDialog"
-      @current-change="handleCurrentChange"
+      @current-change="dealCurrentChange"
       height="600"
       border
       style="width: 100%"
@@ -253,7 +253,7 @@ export default {
       });
     },
     //single-row-choosing triggered event
-    handleCurrentChange(currentRow) {
+    dealCurrentChange(currentRow) {
       this.$emit("option-supplier", currentRow);
     }
   }
