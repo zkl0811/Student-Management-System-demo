@@ -179,8 +179,16 @@ export default {
         .search(this.currentPage, this.pageSize, this.searchMap)
         .then(res => {
           //console.log(res.data.data.rows);
-          this.list = res.data.data.rows;
-          this.total = res.data.data.total;
+          if(res.data.flag){
+              this.list = res.data.data.rows;
+              this.total = res.data.data.total;
+          }else{
+            this.$message({
+              message: 'Server Error',
+              type: 'error'
+            });
+          }
+          
         });
     },
 
@@ -215,7 +223,7 @@ export default {
               this.fetchData();
               this.dialogFormVisible = false;
               this.$message({
-                message: res.data.message,
+                message: 'Successfully Added',
                 type: 'success'
               });
             } else {
@@ -226,7 +234,10 @@ export default {
             }
           });
         } else {
-          alert("Unvalid Form");
+          this.$message({
+                message: "Invalid Form",
+                type: "warning"
+              });
         }
       });
     },
@@ -252,22 +263,29 @@ export default {
             if (res.data.flag) {
               this.fetchData();
               this.dialogFormVisible = false;
+              this.$message({
+                message: 'Update Successfully',
+                type: 'success'
+              });
             } else {
               this.$message({
-                message: "Update Fail",
+                message: "Whoops something went wrong",
                 type: "warning"
               });
             }
           });
         } else {
-          return false;
+          this.$message({
+                message: "Invalid Form",
+                type: "warning"
+              });
         }
       });
     },
     //delete data
     handleDelete(id) {
       this.$confirm("Are you sure you want to delete this data?", "warning", {
-        confirmButtonTest: "Confirm",
+        confirmButtonText: "Confirm",
         cancelButtonText: "Cancel"
       })
         .then(() => {
@@ -275,12 +293,13 @@ export default {
           memberApi.deleteById(id).then(res => {
             if (res.data.flag) {
               this.$message({
-                message: res.data.message,
+                message: 'Delete Successfully',
                 type: "success"
               });
+              this.fetchData();
             } else {
               this.$message({
-                message: res.data.message,
+                message: 'Whoops somenthing went wrong',
                 type: "error"
               });
             }
