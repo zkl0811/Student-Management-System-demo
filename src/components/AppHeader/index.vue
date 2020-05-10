@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import { logout } from "@/api/login.js";
 import passwordApi from "@/api/password.js";
 export default {
   data() {
@@ -54,20 +53,20 @@ export default {
     const validateOldPass = (rule, value, callback) => {
       passwordApi.checkPwd(this.user.id, value).then(res => {
         if (res.data.flag) {
-            //when verificatiion success, use callback() by default
-            callback();
+          //when verificatiion success, use callback() by default
+          callback();
         } else {
-            callback(new Error('Password Verification Failed'));
+          callback(new Error("Password Verification Failed"));
         }
       });
     };
 
-    const validateNewPass = (rule, value, callback)=>{
-        if( value !== this.passwordForm.newPass ){
-            callback(new Error('Password Not Consistent'));
-        }else{
-            callback();
-        }
+    const validateNewPass = (rule, value, callback) => {
+      if (value !== this.passwordForm.newPass) {
+        callback(new Error("Password Not Consistent"));
+      } else {
+        callback();
+      }
     };
 
     return {
@@ -85,8 +84,8 @@ export default {
         ],
         newPass: [{ required: true, message: "must fill", trigger: "blur" }],
         checkPass: [
-            { required: true, message: "must fill", trigger: "blur" },
-            {validator: validateNewPass, trigger: 'change'}
+          { required: true, message: "must fill", trigger: "blur" },
+          { validator: validateNewPass, trigger: "change" }
         ]
       }
     };
@@ -109,45 +108,52 @@ export default {
     },
 
     handleLogout() {
-      logout(localStorage.getItem("mxg-msm-token")).then(res => {
-        if (res.data.flag) {
-          localStorage.removeItem("mxg-msm-user");
-          localStorage.removeItem("mxg-msm-token");
-          this.$router.push("/login");
-        } else {
+      this.$store
+        .dispatch("Logout")
+        .then(res => {
+          if(res.flag){
+            this.$router.push('/login');
+          }else{
+            this.$mesage({
+              message: 'Server Error',
+              type: 'error'
+            });
+          }
+        })
+        .catch(err => {
           this.$message({
-            message: res.data.message,
-            type: "warning",
-            duration: 500
+            message: "Server Error",
+            type: "error"
           });
-        }
-      });
+        });
     },
 
     //prompt with a dialog to reset password
     handlePwd() {
       this.dialogFormVisible = true;
-      this.$nextTick(()=>{
-          this.$refs['passwordForm'].resetFields();
+      this.$nextTick(() => {
+        this.$refs["passwordForm"].resetFields();
       });
     },
 
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-            passwordApi.updatePwd(this.user.id, this.passwordForm.checkPass).then(res=>{
-                if(res.data.flag){
-                        this.$message({
-                            message: 'Update Successfully',
-                            type: 'success'
-                        });
-                        this.handleLogout();
-                }else{
-                    this.$message({
-                        message: 'Password Update Failed,please try again later',
-                        type: 'error'
-                    });
-                }
+          passwordApi
+            .updatePwd(this.user.id, this.passwordForm.checkPass)
+            .then(res => {
+              if (res.data.flag) {
+                this.$message({
+                  message: "Update Successfully",
+                  type: "success"
+                });
+                this.handleLogout();
+              } else {
+                this.$message({
+                  message: "Password Update Failed,please try again later",
+                  type: "error"
+                });
+              }
             });
         } else {
           this.$message({

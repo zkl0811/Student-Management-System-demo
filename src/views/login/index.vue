@@ -17,62 +17,58 @@
 </template>
 
 <script>
-import {login, getUserInfo} from '@/api/login.js';
 export default {
   data() {
     return {
       form: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       rules: {
         username: [
           {
             required: true,
-            message: 'username must be filled',
-            trigger: 'blur'
+            message: "username must be filled",
+            trigger: "blur"
           }
         ],
         password: [
           {
             required: true,
-            message: 'password must be filled',
-            trigger: 'blur'
+            message: "password must be filled",
+            trigger: "blur"
           }
         ]
       }
     };
   },
   methods: {
-    submitForm(formName){
-        //console.log(this);
-        this.$refs[formName].validate(valid=>{
-            if(valid){
-                login(this.form.username, this.form.password).then(res=>{
-                    //console.log(res.data);
-                    const userres=res.data
-                    if(res.data.flag){
-                        getUserInfo(res.data.token).then(res=>{
-                           // console.log(res);
-                            //console.log(userres);
-                            localStorage.setItem('mxg-msm-user', JSON.stringify(res.data.data));
-                            localStorage.setItem('mxg-msm-token', userres.data.token);
-                            //console.log(this);
-                            this.$router.push('/');
-                        });
-                    }else{
-                        //console.log(this);
-                        this.$message({
-                            message: 'Error from server',
-                            type: 'warning'
-                        });
-                    }
+    submitForm(formName) {
+      //console.log(this);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$store
+            .dispatch("Login", this.form)
+            .then(res => {
+              //console.log(res.flag);
+              if (res.flag) {
+                this.$router.push("/");
+              } else {
+                this.$message({
+                  message: "Server Error",
+                  type: "error"
                 });
-            }else{
-            //    console.log(this);
-                return false;
-            }
-        });
+              }
+            })
+            .catch(err => {});
+        } else {
+          //    console.log(this);
+          this.$message({
+            message: "Invalid Form",
+            type: "warning"
+          });
+        }
+      });
     }
   }
 };

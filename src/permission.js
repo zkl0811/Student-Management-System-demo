@@ -1,15 +1,16 @@
 import router from './router.js';
-import { getUserInfo } from './api/login.js';
+import store from '@/store';
 
 router.beforeEach((to, from, next) => {
     //get token
-    const token = localStorage.getItem('mxg-msm-token');
+    const token = store.state.user.token;
+    //console.log(token);
     //if false-> return to login 
     if (!token) {
         if (to.path !== '/login') {
             next({ path: '/login' });
         } else {
-            //go to  from.path
+            //go to  to.path
             next();
         }
     } else {
@@ -18,20 +19,19 @@ router.beforeEach((to, from, next) => {
             next();
         } else {
             //|--if request others, |then if token.userdata ---> go to other pages
-            const userInfo = localStorage.getItem('mxg-msm-user');
+            const userInfo = store.state.user.user;
             if (userInfo) {
                 next();
             } else {
+                console.log('no info');
                 //| then if no token.usedadta --> go to login page
-                getUserInfo(token).then(res=>{
-                    if(res.data.flag){
-                        localStorage.setItem('mxg-msm-user', JSON.stringify(res.data.data));
+                store.dispatch('GetUserInfo').then(res=>{
+                    if(res.flag){
                         next();
                     }else{
-                        next({path: '/login'});
+                        next({ path: '/login' });
                     }
-                }); 
-                
+                }).catch(err=>{});                
             }
 
         }
