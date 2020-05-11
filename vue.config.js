@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
     //config for test server and proxy
     devServer: {
