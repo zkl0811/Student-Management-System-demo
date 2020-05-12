@@ -1,2 +1,2 @@
 #production redirects
-/pro-api/*        http://mengxuegu.com:7300/mock/5ea78b2d5a06b51372b12899
+/pro-api/*        http://mengxuegu.com:7300/mock/5ea78b2d5a06b51372b12899/:splat 200!
