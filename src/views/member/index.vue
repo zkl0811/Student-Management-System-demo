@@ -1,4 +1,4 @@
-  <template>
+<template>
   <!-- data binds data which needs to be rendered 
       height can fix table's head
       prop indicate data's field's name
