@@ -30,7 +30,7 @@ export default {
       pieChartConfig: {
         title: {
           display: true,
-          text: "System Usage"
+          text: "Statistics"
         }
       }
     };
